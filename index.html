@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Work Logger Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .custom-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .status-badge {
+            transition: all 0.3s ease;
+        }
+        .status-badge:hover {
+            transform: scale(1.05);
+        }
+        @media (max-width: 640px) {
+            .filter-buttons {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            .filter-buttons button {
+                flex: 1 1 40%;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen">
+        <!-- Navigation -->
+        <nav class="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-4 sticky top-0 z-10">
+            <div class="container mx-auto flex flex-col sm:flex-row justify-between items-center">
+                <h1 class="text-2xl font-bold mb-2 sm:mb-0">Design Work Logger Pro</h1>
+                <div class="flex items-center space-x-4">
+                    <button onclick="showDashboard()" class="hover:bg-blue-700 px-4 py-2 rounded transition duration-300">
+                        <i class="bi bi-grid-1x2-fill mr-2"></i>Dashboard
+                    </button>
+                    <button onclick="showEntryForm()" class="hover:bg-blue-700 px-4 py-2 rounded transition duration-300">
+                        <i class="bi bi-plus-circle-fill mr-2"></i>New Entry
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="container mx-auto p-4">
+            <!-- Dashboard View -->
+            <div id="dashboard" class="space-y-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <h2 class="text-xl font-semibold flex items-center">
+                        <i class="bi bi-kanban mr-2"></i>Work Dashboard
+                    </h2>
+                    <div class="filter-buttons flex space-x-2">
+                        <button onclick="filterTasks('all')" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300">
+                            <i class="bi bi-collection mr-1"></i>All
+                        </button>
+                        <button onclick="filterTasks('inProgress')" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 transition duration-300">
+                            <i class="bi bi-hourglass-split mr-1"></i>In Progress
+                        </button>
+                        <button onclick="filterTasks('pending')" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-300">
+                            <i class="bi bi-clock-history mr-1"></i>Pending
+                        </button>
+                        <button onclick="filterTasks('completed')" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition duration-300">
+                            <i class="bi bi-check-circle mr-1"></i>Completed
+                        </button>
+                    </div>
+                </div>
+
+                <div id="taskList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Tasks will be dynamically added here -->
+                </div>
+            </div>
+
+            <!-- Entry Form -->
+            <div id="entryForm" class="hidden bg-white p-6 rounded-lg custom-shadow max-w-2xl mx-auto">
+                <h2 class="text-xl font-semibold mb-6 flex items-center">
+                    <i class="bi bi-journal-plus mr-2"></i>New Work Entry
+                </h2>
+                <form id="workEntryForm" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Work Type</label>
+                            <select id="workType" class="w-full border rounded p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="print">Print HR + Layered Files</option>
+                                <option value="digital">Digital HR + Layered Files</option>
+                                <option value="retouching">Creative Retouching</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Team Lead</label>
+                            <input type="text" id="teamLead" class="w-full border rounded p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Date</label>
+                            <input type="date" id="jobDate" class="w-full border rounded p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">QC Assigned To</label>
+                            <input type="text" id="qcPerson" class="w-full border rounded p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Start Time</label>
+                            <input type="time" id="startTime" class="w-full border rounded p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">End Time</label>
+                            <input type="time" id="endTime" class="w-full border rounded p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Status</label>
+                            <select id="status" class="w-full border rounded p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="inProgress">In Progress</option>
+                                <option value="pending">Pending</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">QC Status</label>
+                            <select id="qcStatus" class="w-full border rounded p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="internal">Internal QC</option>
+                                <option value="amend">QC Amend</option>
+                                <option value="approved">CS Approved</option>
+                                <option value="csAmend">CS Amend</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">File Formats</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-2" name="fileFormat" value="jpg"> JPG
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-2" name="fileFormat" value="pdf"> PDF
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-2" name="fileFormat" value="ai"> Illustrator
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-2" name="fileFormat" value="psd"> Photoshop
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <label class="flex items-center">
+                                <input type="checkbox" class="mr-2" id="mockupSubmitted"> Mockup Submitted
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" class="mr-2" id="presentationProvided"> Presentation Provided
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end space-x-2">
+                        <button type="button" onclick="showDashboard()" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition duration-300">
+                            <i class="bi bi-x-circle mr-1"></i>Cancel
+                        </button>
+                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300">
+                            <i class="bi bi-save mr-1"></i>Save Entry
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+        function showDashboard() {
+            document.getElementById('dashboard').classList.remove('hidden');
+            document.getElementById('entryForm').classList.add('hidden');
+            renderTasks();
+        }
+
+        function showEntryForm() {
+            document.getElementById('dashboard').classList.add('hidden');
+            document.getElementById('entryForm').classList.remove('hidden');
+            document.getElementById('jobDate').valueAsDate = new Date();
+        }
+
+        function calculateDuration(startTime, endTime) {
+            const start = new Date(`2000/01/01 ${startTime}`);
+            const end = new Date(`2000/01/01 ${endTime}`);
+            const diff = (end - start) / 1000 / 60; // Duration in minutes
+            const hours = Math.floor(diff / 60);
+            const minutes = Math.floor(diff % 60);
+            return `${hours}h ${minutes}m`;
+        }
+
+        function renderTasks(filter = 'all') {
+            const taskList = document.getElementById('taskList');
+            taskList.innerHTML = '';
+            
+            const filteredTasks = filter === 'all' 
+                ? tasks 
+                : tasks.filter(task => task.status === filter);
+
+            filteredTasks.forEach((task, index) => {
+                const taskElement = document.createElement('div');
+                taskElement.className = 'bg-white p-4 rounded-lg custom-shadow hover:shadow-lg transition duration-300';
+                taskElement.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="font-semibold">${task.workType}</h3>
+                        <span class="status-badge px-2 py-1 rounded text-sm ${getStatusColor(task.status)}">${task.status}</span>
+                    </div>
+                    <div class="text-sm space-y-1">
+                        <p><i class="bi bi-calendar3 mr-1"></i><strong>Date:</strong> ${task.date}</p>
+                        <p><i class="bi bi-person mr-1"></i><strong>Team Lead:</strong> ${task.teamLead}</p>
+                        <p><i class="bi bi-shield-check mr-1"></i><strong>QC Person:</strong> ${task.qcPerson}</p>
+                        <p><i class="bi bi-clock mr-1"></i><strong>Duration:</strong> ${calculateDuration(task.startTime, task.endTime)}</p>
+                        <p><i class="bi bi-file-earmark mr-1"></i><strong>Files:</strong> ${task.fileFormats.join(', ')}</p>
+                        <p><i class="bi bi-check-circle mr-1"></i><strong>QC Status:</strong> ${task.qcStatus}</p>
+                    </div>
+                    <div class="mt-3 flex justify-between items-center">
+                        <div>
+                            ${task.mockupSubmitted ? '<span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded mr-1">Mockup ✓</span>' : ''}
+                            ${task.presentationProvided ? '<span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Presentation ✓</span>' : ''}
+                        </div>
+                        <button onclick="deleteTask(${index})" class="text-red-500 hover:text-red-700 transition duration-300">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                `;
+                taskList.appendChild(taskElement);
+            });
+        }
+
+        function getStatusColor(status) {
+            const colors = {
+                inProgress: 'bg-yellow-100 text-yellow-800',
+                pending: 'bg-red-100 text-red-800',
+                completed: 'bg-green-100 text-green-800'
+            };
+            return colors[status] || 'bg-gray-100 text-gray-800';
+        }
+
+        function filterTasks(status) {
+            renderTasks(status);
+        }
+
+        function deleteTask(index) {
+            if (confirm('Are you sure you want to delete this task?')) {
+                tasks.splice(index, 1);
+                localStorage.setItem('tasks', JSON.stringify(tasks));
+                renderTasks();
+            }
+        }
+
+        document.getElementById('workEntryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const fileFormats = Array.from(document.getElementsByName('fileFormat'))
+                .filter(checkbox => checkbox.checked)
+                .map(checkbox => checkbox.value);
+
+            const newTask = {
+                workType: document.getElementById('workType').value,
+                teamLead: document.getElementById('teamLead').value,
+                date: document.getElementById('jobDate').value,
+                startTime: document.getElementById('startTime').value,
+                endTime: document.getElementById('endTime').value,
+                status: document.getElementById('status').value,
+                qcPerson: document.getElementById('qcPerson').value,
+                qcStatus: document.getElementById('qcStatus').value,
+                fileFormats: fileFormats,
+                mockupSubmitted: document.getElementById('mockupSubmitted').checked,
+                presentationProvided: document.getElementById('presentationProvided').checked
+            };
+
+            tasks.unshift(newTask); // Add new task at the beginning
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            showDashboard();
+            this.reset();
+        });
+
+        // Initialize dashboard view
+        showDashboard();
+    </script>
+<script>document.body.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); return }, { passive: false })</script>
+	</body>
+</html>
